@@ -1,0 +1,8 @@
+issue,dimension,column,rows_affected
+Duplicate transaction IDs removed,Uniqueness,txn_id,12
+Missing amounts filled with median,Completeness,amount,20
+Unusual amounts flagged using IQR,Accuracy,amount,40
+Transaction types standardized,Consistency,txn_type,376
+Transaction dates standardized,Consistency,txn_date,5
+Invalid transaction dates,Validity,txn_date,0
+Transactions linked to unregistered agents,Validity,agent_id,7
