@@ -1,37 +1,93 @@
-# PLP Data Analytics – Week 3 Assignment
-## Duka Electronics Sales Analysis and Agent Transaction Data Cleaning
+# Duka Sales Analysis and Mobile-Money Agent Data Cleaning
 
-This project contains two data analytics engagements completed using Python, Pandas, NumPy, Excel, and Jupyter Notebooks.
+This project contains two Python data-analysis workflows:
 
-## Project Overview
+1. **Duka Electronics sales analysis** — explores 1,000 orders across five branches from January to June 2026.
+2. **Mobile-money agent transaction cleaning** — cleans transaction records, validates agent registrations, and records data-quality actions in an audit log.
 
-### Engagement 1: Duka Electronics Sales Analysis
+The project uses Python, pandas, NumPy, Jupyter notebooks, and Excel.
 
-The objective was to explore sales data, identify business trends, compare branch performance, and provide actionable business insights.
+## Repository contents
 
-The analysis includes:
-- Initial data inspection and exploration.
-- Feature engineering and revenue calculations.
-- Sales analysis by branch, product, month, and sales channel.
-- Weekday versus weekend performance.
-- An Excel workbook containing branch revenue calculations using SUMIFS, region lookups using XLOOKUP, and a PivotTable.
-- Extraction of Premium online sales from Nairobi and Mombasa.
+- `duka_sales_exploration.ipynb` — sales exploration, feature engineering, branch and time-based analysis, and exports.
+- `agent_cleanup.ipynb` — mobile-money transaction cleaning workflow.
+- `generate_data.py` — reproducibly generates the sales, agent-register, and transaction input datasets.
+- `cleaning_pipeline.py` — reusable mobile-money cleaning function that returns both cleaned transactions and an audit log.
+- `duka_branch_summary.xlsx` — workbook containing the enriched sales data, branch summary, weekend-versus-weekday summary, monthly summary, and branch-by-channel pivot.
+- `agent_transactions_clean.csv` — cleaned mobile-money transaction data.
+- `premium_online_coast_capital.csv` — Premium online orders from the Coast and Central branches (Nairobi and Mombasa).
+- `requirements.txt` — Python package requirements.
+- `outputs/` — generated analysis outputs, including the enriched sales CSV and mobile-money audit log.
 
-### Duka Electronics Executive Summary
+## Run in Google Colab
 
-1. Duka Electronics recorded 1,000 orders across five branches between January and June 2026.
-2. Nairobi was the best-performing branch, generating KES 26,106,100 from 376 orders.
-3. Laptops generated the highest product revenue of KES 41,535,000, while tablets recorded the highest sales volume at 691 units.
-4. April was the strongest month, generating KES 13,518,300, which was 23.98% higher than June, the weakest month.
-5. A total of 83 Premium online orders from Nairobi and Mombasa generated KES 10,218,000 in revenue.
+1. Open [Google Colab](https://colab.research.google.com/).
+2. Choose **File → Open notebook → GitHub**.
+3. Enter this repository URL: `https://github.com/Talia-commits-creator/plp-da-a3-duka-sales-and-agent-cleanup`.
+4. Open `duka_sales_exploration.ipynb`.
+5. Run the notebook cells from top to bottom. The setup cell clones the repository into the Colab runtime, and the generator creates the input CSV files there.
 
-### Engagement 2: Agent Transaction Data Cleaning
+The Colab runtime uses temporary storage. Download or save any generated files you need to keep after the session ends.
 
-The objective was to clean and validate mobile money agent transaction records using a reusable Python cleaning pipeline.
+## Run locally
 
-The cleaning process includes:
-- Removing duplicate transaction IDs.
-- Converting transaction amounts into numeric values.
-- Imputing missing amounts using the median.
-- Identifying outliers using the IQR method.
--# plp-da-a3-duka-sales-and-agent-cleanup
+Install the dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Run the data generator:
+
+```bash
+python generate_data.py
+```
+
+Then open and run the notebooks in order as needed.
+
+## Duka sales analysis
+
+The sales workflow creates and examines fields such as revenue, month, weekday, weekend indicator, and price band. It includes:
+
+- Sales and revenue summaries by branch, product, month, and channel.
+- Weekend-versus-weekday comparison.
+- Best- and worst-performing month identification.
+- A filtered export of Premium online orders for Nairobi and Mombasa.
+
+### Executive summary
+
+- The dataset contains **1,000 orders** across five branches from January through June 2026.
+- **Nairobi** is the highest-revenue branch, with **KES 26,106,100** from 376 orders.
+- **April** is the strongest month, with **KES 13,518,300**; **June** is the weakest, with **KES 10,903,400**.
+- Weekdays account for **723 orders** and **KES 51,856,200** in revenue; weekends account for **277 orders** and **KES 19,936,300**.
+- The Premium online Coast-and-Central export contains **83 orders** and **KES 10,218,000** in revenue.
+
+## Mobile-money transaction cleaning
+
+The reusable function in `cleaning_pipeline.py`:
+
+- Removes duplicate transaction IDs.
+- Converts transaction amounts to numeric values.
+- Flags missing amounts and fills them using the median.
+- Flags unusual amounts using the interquartile range (IQR) method.
+- Standardizes transaction types and dates.
+- Identifies invalid dates.
+- Joins agent county information and flags transactions linked to unregistered agents.
+
+The function returns the cleaned transaction DataFrame and an audit-log DataFrame. The audit log records the issue, data-quality dimension, affected column, and number of rows affected. It is exported as `outputs/mobile_money_audit_log.csv`.
+
+## Excel workbook
+
+`duka_branch_summary.xlsx` contains these sheets:
+
+- `duka_sales_enriched`
+- `Branch Summary`
+- `Weekend vs Weekday`
+- `Monthly Summary`
+- `Pivot Table 1` (branch revenue by sales channel)
+
+The branch summary reports total revenue of **KES 71,792,500** across **1,000 orders**.
+
+## Methodology and reproducibility
+
+The input datasets are generated by `generate_data.py` using fixed random seeds, so the generated data is reproducible. The notebooks perform the analysis and write the resulting CSV and Excel outputs. The mobile-money cleaning logic is kept in a separate Python module so it can be reused independently of the notebook.
